@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Loima's Death In:</title>
+    <link rel="stylesheet" href="../css/tyylit.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 600px;
+        }
+    </style>
+    <script>
+        var showDays = false;
+
+        function toggleDisplay() {
+            showDays = !showDays;
+            if (showDays) {
+                document.getElementById("toggleButton").innerText = "Show in hours";
+            } else {
+                document.getElementById("toggleButton").innerText = "Show in days";
+            }
+            calculateTime();
+        }
+
+        function isLeapYear(year) { //Karkausvuosia varten
+            return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+        }
+
+        function DaysBetween(startDate, endDate) {
+            var startYear = startDate.getUTCFullYear();
+            var endYear = endDate.getUTCFullYear();
+            var days = 0;
+
+            for (var year = startYear; year <= endYear; year++) {
+                days += isLeapYear(year) ? 366 : 365;
+            }
+
+            var startDayOfYear = Math.floor((startDate - new Date(Date.UTC(startYear, 0, 1))) / (1000 * 60 * 60 * 24));
+            var endDayOfYear = Math.floor((endDate - new Date(Date.UTC(endYear, 0, 1))) / (1000 * 60 * 60 * 24));
+            
+            days -= startDayOfYear;
+            days -= (isLeapYear(endYear) ? 366 : 365) - endDayOfYear;
+
+            return days;
+        }
+
+        function calculateTime() {
+            var targetDate = new Date(Date.UTC(2032, 11, 22, 12, 0, 0)); // Aika UTC, jotta sama muilla aika vyöhykkeillä
+            var now = new Date();
+            var timeDifference = targetDate.getTime() - now.getTime();
+
+            var days = DaysBetween(now, targetDate);
+            var hours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+
+            if (showDays) {
+                document.getElementById("timeLeft").innerHTML = days + " days, " +
+                hours + ":" + (minutes < 10 ? "0" : "") + minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+            } else {
+                var totalHours = Math.floor(timeDifference / (1000 * 60 * 60));
+                document.getElementById("timeLeft").innerHTML = totalHours + ":" +
+                (minutes < 10 ? "0" : "") + minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+            }
+        }
+
+        setInterval(calculateTime, 1000);
+    </script>
+</head>
+
+<body onload="calculateTime()">
+
+<div class="header">
+  <p class="note">Countdown to 2024 YR4</p>
+  <h1 id="timeLeft"></h1>
+  <button id="toggleButton" onclick="toggleDisplay()">Show in days</button>
+</div>
+
+<div class="navbar">
+    <a href="../index.html"> Home</a>
+    <a href="../html/impact.html"> Loima's Cringe</a>
+    <a href="../html/mitigation.html"> Microslop Cope</a>
+    <a href="../html/map.html"> Nuke Loima :)</a>
+  </div>
+
+<div class="row">
+  <div class="main">
+    <h1>Find and Nuke Loima :)</h1>
+  </div>
+</div>
+
+<div id="map"></div>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script>
+    var map = L.map('map').setView([51.505, -0.09], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    var circle = L.circle([51.505, -0.09], {
+        color: 'red',
+        fillColor: '#f03',
+        fillOpacity: 0.5,
+        radius: 1800, // 1.8 km säde = 3.6 km halkaisija niinkuin 7.8 megatonnin räjähdys.
+        draggable: true
+    }).addTo(map);
+
+    circle.on('mousedown', function(e) {
+        map.dragging.disable();
+        map.on('mousemove', function(e) {
+            circle.setLatLng(e.latlng);
+        });
+    });
+
+    map.on('mouseup', function(e) {
+        map.dragging.enable();
+        map.off('mousemove');
+    });
+</script>
+
+<div class="footer">
+  <p>This page was last edited on 22.2.2025</p>
+</div>
+
+</body>
+</html>

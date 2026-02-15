@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Countdown To Impact</title>
+    <link rel="stylesheet" href="css/tyylit.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>
+        var showDays = false;
+
+        function toggleDisplay() {
+            showDays = !showDays;
+            if (showDays) {
+                document.getElementById("toggleButton").innerText = "Show in hours";
+            } else {
+                document.getElementById("toggleButton").innerText = "Show in days";
+            }
+            calculateTime();
+        }
+
+        function isLeapYear(year) { //Karkausvuosia varten
+            return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+        }
+
+        function DaysBetween(startDate, endDate) {
+            var startYear = startDate.getUTCFullYear();
+            var endYear = endDate.getUTCFullYear();
+            var days = 0;
+
+            for (var year = startYear; year <= endYear; year++) {
+                days += isLeapYear(year) ? 366 : 365;
+            }
+
+            var startDayOfYear = Math.floor((startDate - new Date(Date.UTC(startYear, 0, 1))) / (1000 * 60 * 60 * 24));
+            var endDayOfYear = Math.floor((endDate - new Date(Date.UTC(endYear, 0, 1))) / (1000 * 60 * 60 * 24));
+            
+            days -= startDayOfYear;
+            days -= (isLeapYear(endYear) ? 366 : 365) - endDayOfYear;
+
+            return days;
+        }
+
+        function calculateTime() {
+            var targetDate = new Date(Date.UTC(2032, 11, 22, 12, 0, 0)); // Aika UTC, jotta sama muilla aika vyöhykkeillä
+            var now = new Date();
+            var timeDifference = targetDate.getTime() - now.getTime();
+
+            var days = DaysBetween(now, targetDate);
+            var hours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+
+            if (showDays) {
+                document.getElementById("timeLeft").innerHTML = + days + " days, " +
+                hours + ":" + (minutes < 10 ? "0" : "") + minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+            } else {
+                var totalHours = Math.floor(timeDifference / (1000 * 60 * 60));
+                document.getElementById("timeLeft").innerHTML = totalHours + ":" +
+                (minutes < 10 ? "0" : "") + minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+            }
+        }
+
+        setInterval(calculateTime, 1000);
+    </script>
+</head>
+
+<body onload="calculateTime()">
+
+<div class="header">
+  <p class="note">Countdown to 2024 YR4</p>
+  <h1 id="timeLeft"></h1>
+  <button id="toggleButton" onclick="toggleDisplay()">Show in days</button>
+</div>
+
+<div class="navbar">
+  <a href="index.html"> Home</a>
+  <a href="html/impact.html"> Impact Scenarios</a>
+  <a href="html/mitigation.html"> Mitigation and Response</a>
+  <a href="html/map.html"> Direct Impact Map</a>
+</div>
+
+<div class="row">
+  <div class="main">
+    <h1>Welcome to the Asteroid 2024 YR4 Information hub</h1>
+
+    <h2>Understanding the Potential Impact</h2>
+        <p>Asteroid 2024 YR4, discovered in December 2024, has captured the attention of
+          astronomers and the public alike due to its potential to impact Earth on December 22, 
+          2032. This near-Earth object, estimated to be between 40 and 90 meters in diameter, has
+          been closely monitored by NASA and the European Space Agency (ESA) since its discovery
+          <a href="https://science.nasa.gov/solar-system/asteroids/2024-yr4/"> 1</a> <a href="https://www.esa.int/Space_Safety/Planetary_Defence/ESA_actively_monitoring_near-Earth_asteroid_2024_YR4"> 2</a>
+          .
+        </p>
+
+    <h2>Current Impact Probability</h2>
+        <p>As of the latest observations, the probability of asteroid 2024 YR4 impacting Earth has
+          fluctuated, with estimates ranging from 1% to 3%
+          <a href="https://www.cbsnews.com/news/asteroid-hitting-earth-odds-go-up-again/"> 3</a> <a href="https://www.msn.com/en-ph/news/technology/nasa-massively-lowers-impact-risk-of-city-killer-asteroid-2024-yr4-to-1-in-360/ar-AA1zrcxW"> 4</a>. Recent data from NASA has reduced the
+          impact probability to approximately 1.5%, but this figure is expected to continue 
+          evolving , with the impact probability expected to rise as more accurate observations are made <a href="https://www.cbsnews.com/news/asteroid-hitting-earth-odds-go-up-again/"> 3</a>
+          , though NASA has recently lowered the probability again to a low of 0.28% <a href="https://eu.jsonline.com/story/news/nation/2025/02/21/nasa-odds-2024-yr4-asteroid-city-killer/79333551007/"> 5</a></li>
+          .
+        </p>
+
+    <h2>Stay Informed</h2>
+        <p>Stay tuned to our website for the latest updates on asteroid 2024 YR4 and its potential
+          impact on Earth. We are dedicated to providing accurate and timely information to help
+          you stay informed about this celestial event.
+        </p>
+  </div>
+
+  <div class="side">
+    <h2>News</h2>
+      <ul>
+        <li><a href="https://eu.jsonline.com/story/news/nation/2025/02/21/nasa-odds-2024-yr4-asteroid-city-killer/79333551007/"> Odds of 'city killer' asteroid 2024 YR4 fall once again, now to 0.28%, NASA says</a></li>
+        <li><a href="https://www.livescience.com/space/asteroids/nasa-changes-odds-of-the-asteroid-hitting-earth-in-2032-yet-again-but-this-time-its-good-news">NASA just changed the odds of asteroid YR4 hitting Earth in 2032 yet again</a></li>
+      </ul>
+  </div>
+</div>
+
+<div class="footer">
+  <p>This page was last edited on 22.2.2025</p>
+</div>
+
+</body>
+</html>
